@@ -240,12 +240,13 @@ export default function App() {
                           </button>
                         </div>
                       </div>
-                      <div className="flex-1 bg-slate-100">
-                        <iframe 
-                          src={CHAPTERS.find(c => c.id === selectedChapterId)?.pdfPath}
-                          className="w-full h-full border-none"
-                          title={CHAPTERS.find(c => c.id === selectedChapterId)?.title}
-                        />
+                      <div className="flex-1 bg-slate-100 flex items-center justify-center">
+                        <div className="text-center space-y-4">
+                          <div className="w-24 h-24 bg-white rounded-3xl shadow-sm flex items-center justify-center mx-auto text-indigo-600">
+                            <FileText size={48} />
+                          </div>
+                          <p className="text-slate-500 font-bold">سيتم رفع ملف الـ PDF قريباً</p>
+                        </div>
                       </div>
                     </div>
                   ) : (
