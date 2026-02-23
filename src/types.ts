@@ -18,6 +18,7 @@ export interface Resource {
   title: string;
   type: 'pdf' | 'video' | 'link';
   url: string;
+  content?: string; // Optional OCR content or summary
 }
 
 export interface ExamData {

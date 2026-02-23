@@ -28,60 +28,62 @@ import { cn } from './lib/utils';
 
 const EXAM_URL = "https://www.dzexams.com/ar/bac/sciences-naturelles/se";
 
+const INITIAL_EXAM_DATA: ExamData = {
+  topics: [
+    { id: 't1', title: 'تركيب البروتين', description: 'دراسة آليات الاستنساخ والترجمة، ودور الأنزيمات والـ ARN في التعبير المورثي.', category: 'المجال الأول' },
+    { id: 't2', title: 'الاتصال العصبي', description: 'النقل المشبكي، كمون الراحة وكمون العمل، وتأثير المخدرات والسموم على المشابك.', category: 'المجال الأول' },
+    { id: 't3', title: 'الدفاع عن الذات (المناعة)', description: 'الاستجابة المناعية الخلطية والخلوية، التعرف على اللاذات وفقدان المناعة المكتسبة (VIH).', category: 'المجال الأول' },
+    { id: 't4', title: 'التحولات الطاقوية', description: 'التنفس الخلوي، التخمر، والتركيب الضوئي وآليات تحويل الطاقة الكيميائية الكامنة.', category: 'المجال الثاني' }
+  ],
+  sample_questions: [
+    { id: 'q1', text: 'اشرح دور بروتين P53 في تنظيم الانقسام الخلوي وعلاقته بمرض السرطان.', explanation: 'يعمل بروتين P53 كحارس للخلية، حيث يوقف الانقسام في حال وجود خلل في الـ ADN لإصلاحه، وفي حال تعذر الإصلاح يحفز الموت المبرمج للخلية. غيابه أو طفرته يؤدي لتكاثر عشوائي (سرطان).' },
+    { id: 'q2', text: 'ما هو تأثير مادة الـ RIP على جزيئات الـ ARN خلال عملية تركيب البروتين؟', explanation: 'مادة الـ RIP هي مادة أنزيمية تكسر الرابطة بين القاعدة الآزوتية أدنين وسكر الريبوز في الـ ARN، مما يؤدي لتوقف عملية تركيب البروتين وموت الخلية.' }
+  ],
+  resources: [
+    { id: 'v1', title: 'مراجعة شاملة: تركيب البروتين', type: 'video', url: 'https://www.youtube.com/watch?v=QM92NXQBncg' },
+    { id: 'v2', title: 'شرح مفصل: الاتصال العصبي', type: 'video', url: 'https://www.youtube.com/watch?v=1tFiEnhSvpc' },
+    { id: 'v3', title: 'ملخص المناعة للبكالوريا', type: 'video', url: 'https://www.youtube.com/watch?v=3KjRoZxTk9w' },
+    { id: 'r2025', title: 'موضوع بكالوريا 2025 التجريبي - علوم طبيعية', type: 'pdf', url: 'https://www.dzexams.com/ar/bac/sciences-naturelles/se', content: '### تفاصيل موضوع بكالوريا 2025 (تجريبي)\n\n**الموضوع الأول:**\n- **التمرين 1 (05 نقاط):** دراسة استهداف أنواع الـ ARN باستعمال مادة الـ RIP وتأثيرها على تركيب البروتين في علاج الأورام السرطانية.\n- **التمرين 2 (07 نقاط):** دراسة الخصائص البنيوية للصانعات الخضراء عند طحالب T.pseudonana وآلية استغلال الـ CO2.\n- **التمرين 3 (08 نقاط):** تأثير مادة الأدينوزين (Ado) على النشاط العصبي ودور مادة الميثيل ثيوبورومين (Mtb) الموجودة في الشاي الأخضر.\n\n**الموضوع الثاني:**\n- **التمرين 1 (05 نقاط):** تحويل الطاقة الكيميائية الكامنة في الغلوكوز وتأثير مادة 2-DG (2-Desoxyglucose).\n- **التمرين 2 (07 نقاط):** نشاط أنزيم SOD (Superoxide dismutase) وعلاقته بمرض التصلب الجانبي الضموري (ALS).\n- **التمرين 3 (08 نقاط):** دراسة نظام الـ ABO والآليات المناعية في تحقيق التسامح المناعي عند نقل الدم.' },
+    { id: 'r2024', title: 'موضوع بكالوريا 2024 - علوم طبيعية', type: 'pdf', url: 'https://www.dzexams.com/ar/bac/sciences-naturelles/se/2024', content: '### تفاصيل موضوع بكالوريا 2024\n\n**الموضوع الأول:**\n- **التمرين 1:** فيروس VIH وخلايا LT4 وتأثير دواء Zalcitabine.\n- **التمرين 2:** التوازن الشاردي في العصبونات، قنوات الصوديوم الفولطية Scn1a ومرض الصرع.\n- **التمرين 3:** العلاقة بين مادة Benzopyrene وسرطان الرئة ودور بروتين P53.\n\n**الموضوع الثاني:**\n- **التمرين 1:** تأثير المضادات الحيوية (Tetracycline و Oxazolidinone) على مراحل الترجمة.\n- **التمرين 2:** تأثير عامل الظلام ومركب CA1P على نشاط أنزيم Rubisco في نبات الفاصوليا.\n- **التمرين 3:** الاستجابة المناعية الخلطية ضد بكتيريا Staphylococcus aureus ودور بروتين SPA.' },
+    { id: 'r2023', title: 'موضوع بكالوريا 2023 - علوم طبيعية', type: 'pdf', url: 'https://www.dzexams.com/ar/bac/sciences-naturelles/se/2023', content: '### تفاصيل موضوع بكالوريا 2023\n\n**الموضوع الأول:**\n- **التمرين 1:** دور البروتينات الغشائية في عمل المشابك وتأثير توكسين الكزاز (Tetanus).\n- **التمرين 2:** تأثير دواء ML901 على طفيلي الملاريا (Plasmodium) وعملية تنشيط الأحماض الأمينية.\n- **التمرين 3:** دور أنزيم الأروماتاز ومستقبل الأستراديول في سرطان الثدي وتأثير مادة الكيرستين (Quercetin).\n\n**الموضوع الثاني:**\n- **التمرين 1:** استقرار التسلسل النيكليوتيدي والبنية الفراغية للبروتين.\n- **التمرين 2:** آلية عمل بروتين البرفورين (Perforin) وكيفية حماية خلايا LTc لنفسها.\n- **التمرين 3:** تأثير مبيد الأعشاب DCMU على المرحلة الكيموضوئية في التركيب الضوئي.' },
+    { id: 'r2022', title: 'موضوع بكالوريا 2022 - علوم طبيعية', type: 'pdf', url: 'https://www.dzexams.com/ar/bac/sciences-naturelles/se/2022', content: '### تفاصيل موضوع بكالوريا 2022\n\n**الموضوع الأول:**\n- **التمرين 1:** دراسة بنية الغشاء الهيولي ودور الغليكوبروتينات في تحديد الذات (نظام HLA و ABO و Rh).\n- **التمرين 2:** الاتصال العصبي، دراسة المشابك التنبيهية (Glutamate) والتثبيطية (GABA) ودور القنوات الفولطية.\n- **التمرين 3:** تأثير المضاد الحيوي الجينتاميسين (Gentamicine) على آلية الترجمة وعلاج مرض انحلال البشرة الفقاعي.\n\n**الموضوع الثاني:**\n- **التمرين 1:** مصدر كمون الراحة ودور مضخة Na+/K+ وتأثير مادة السيانور على إنتاج الـ ATP.\n- **التمرين 2:** دراسة آلية تأثير مادة α-amanitine المستخرجة من فطر أمانيت فالويد على أنزيم ARN بوليميراز.\n- **التمرين 3:** دور الأنزيمات في هضم السليلوز عند الأبقار وتأثير المكمل الغذائي 3-NOP في التقليل من انبعاث غاز الميثان.' },
+    { id: 'r2021', title: 'موضوع بكالوريا 2021 - علوم طبيعية', type: 'pdf', url: 'https://www.dzexams.com/ar/bac/sciences-naturelles/se/2021', content: '### تفاصيل موضوع بكالوريا 2021\n\n**الموضوع الأول:**\n- **التمرين 1:** مراحل تركيب البروتين (الاستنساخ والترجمة) ومستويات البنية الفراغية.\n- **التمرين 2:** دراسة بنية ووظيفة أنزيم الريبونكلياز (A) وتأثير الـ pH والحرارة على نشاطه.\n- **التمرين 3:** فيروس VIH وتأثيره على خلايا LT4 وفقدان المناعة المكتسبة.\n\n**الموضوع الثاني:**\n- **التمرين 1:** مراحل الاستجابة المناعية النوعية (التعرف، التنشيط، التنفيذ).\n- **التمرين 2:** استثناءات الشفرة الوراثية في كائن Tetrahymena وكيفية استغلالها في العلاج.\n- **التمرين 3:** آلية نقل رسائل الألم وتأثير سم العنكبوت (Psp3TX1) على القنوات الفولطية للكالسيوم.' },
+    { id: 'r2020', title: 'موضوع بكالوريا 2020 - علوم طبيعية', type: 'pdf', url: 'https://www.dzexams.com/ar/bac/sciences-naturelles/se/2020', content: '### تفاصيل موضوع بكالوريا 2020\n\n**الموضوع الأول:**\n- **التمرين 1:** البنية الداخلية للكرة الأرضية، المعطيات الزلزالية والانقطاعات (موهو، غوتنبرغ، ليمان).\n- **التمرين 2:** التأثير النوعي المزدوج للأنزيم، دراسة أنزيمات Cox-1 و Cox-2 وتأثير دواء الإيبوبروفان.\n- **التمرين 3:** سرطان الثدي، دور بروتين Her2 وتأثير دواء Trastuzumab (العلاج المناعي).\n\n**الموضوع الثاني:**\n- **التمرين 1:** الانتقاء النسيلي للمفاويات ودور الخلايا العارضة (CPA).\n- **التمرين 2:** تأثير مادة الريسين (Ricin) المستخرجة من بذور الخروع على تركيب البروتين.\n- **التمرين 3:** نضج المشابك المثبطة (GABA) عند المولود الجديد ودور مضخات الكلور (NKCC1 و KCC2).' }
+  ]
+};
+
 export default function App() {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'library'>('dashboard');
-  const [examData, setExamData] = useState<ExamData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [examData, setExamData] = useState<ExamData>(INITIAL_EXAM_DATA);
+  const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
   const [filterType, setFilterType] = useState<'all' | 'pdf' | 'link'>('all');
+  const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    // Background update if needed, but don't block
+    const updateData = async () => {
       try {
         const data = await generateExamContent(EXAM_URL);
-        // Merge extracted data with specific requested videos
-        const enrichedData: ExamData = {
-          ...data,
-          resources: [
-            ...(data.resources || []),
-            { id: 'v1', title: 'مراجعة شاملة: تركيب البروتين', type: 'video', url: 'https://www.youtube.com/watch?v=QM92NXQBncg' },
-            { id: 'v2', title: 'شرح مفصل: الاتصال العصبي', type: 'video', url: 'https://www.youtube.com/watch?v=1tFiEnhSvpc' },
-            { id: 'v3', title: 'ملخص المناعة للبكالوريا', type: 'video', url: 'https://www.youtube.com/watch?v=3KjRoZxTk9w' }
-          ]
-        };
-        setExamData(enrichedData);
+        if (data && data.topics && data.topics.length > 0) {
+          setExamData(prev => ({
+            ...data,
+            resources: [
+              ...(data.resources || []),
+              ...prev.resources.filter(r => r.type === 'video') // Keep our videos
+            ]
+          }));
+        }
       } catch (error) {
-        console.error("Failed to fetch exam data:", error);
-        // Fallback with specific requested data
-        setExamData({
-          topics: [
-            { id: 't1', title: 'تركيب البروتين', description: 'دراسة آليات الاستنساخ والترجمة، ودور الأنزيمات والـ ARN في التعبير المورثي.', category: 'المجال الأول' },
-            { id: 't2', title: 'الاتصال العصبي', description: 'النقل المشبكي، كمون الراحة وكمون العمل، وتأثير المخدرات والسموم على المشابك.', category: 'المجال الأول' },
-            { id: 't3', title: 'الدفاع عن الذات (المناعة)', description: 'الاستجابة المناعية الخلطية والخلوية، التعرف على اللاذات وفقدان المناعة المكتسبة (VIH).', category: 'المجال الأول' },
-            { id: 't4', title: 'التحولات الطاقوية', description: 'التنفس الخلوي، التخمر، والتركيب الضوئي وآليات تحويل الطاقة الكيميائية الكامنة.', category: 'المجال الثاني' }
-          ],
-          sample_questions: [
-            { id: 'q1', text: 'اشرح دور بروتين P53 في تنظيم الانقسام الخلوي وعلاقته بمرض السرطان.', explanation: 'يعمل بروتين P53 كحارس للخلية، حيث يوقف الانقسام في حال وجود خلل في الـ ADN لإصلاحه، وفي حال تعذر الإصلاح يحفز الموت المبرمج للخلية. غيابه أو طفرته يؤدي لتكاثر عشوائي (سرطان).' },
-            { id: 'q2', text: 'ما هو تأثير مادة الـ RIP على جزيئات الـ ARN خلال عملية تركيب البروتين؟', explanation: 'مادة الـ RIP هي مادة أنزيمية تكسر الرابطة بين القاعدة الآزوتية أدنين وسكر الريبوز في الـ ARN، مما يؤدي لتوقف عملية تركيب البروتين وموت الخلية.' }
-          ],
-          resources: [
-            { id: 'v1', title: 'مراجعة شاملة: تركيب البروتين', type: 'video', url: 'https://www.youtube.com/watch?v=QM92NXQBncg' },
-            { id: 'v2', title: 'شرح مفصل: الاتصال العصبي', type: 'video', url: 'https://www.youtube.com/watch?v=1tFiEnhSvpc' },
-            { id: 'v3', title: 'ملخص المناعة للبكالوريا', type: 'video', url: 'https://www.youtube.com/watch?v=3KjRoZxTk9w' },
-            { id: 'r1', title: 'موضوع بكالوريا 2024 - علوم طبيعية', type: 'pdf', url: 'https://www.dzexams.com/ar/bac/sciences-naturelles/se' },
-            { id: 'r2', title: 'الإجابة النموذجية بكالوريا 2023', type: 'pdf', url: 'https://www.dzexams.com/ar/bac/sciences-naturelles/se' }
-          ]
-        });
-      } finally {
-        setIsLoading(false);
+        console.error("Background data update failed:", error);
       }
     };
 
-    fetchData();
+    updateData();
   }, []);
 
-  const filteredResources = examData?.resources.filter(r => {
+  const filteredResources = examData?.resources?.filter(r => {
     const title = r.title || '';
     const matchesSearch = title.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesFilter = filterType === 'all' || r.type === filterType;
@@ -96,7 +98,7 @@ export default function App() {
           <div className="bg-brand-600 p-2 rounded-lg">
             <GraduationCap className="text-white w-6 h-6" />
           </div>
-          <h1 className="text-xl font-bold tracking-tight text-slate-900">BacHub</h1>
+          <h1 className="text-xl font-bold tracking-tight text-slate-900">Bachub</h1>
         </div>
         
         <div className="flex bg-slate-100 p-1 rounded-xl">
@@ -159,9 +161,9 @@ export default function App() {
                       مواضيع الامتحان الرئيسية
                     </h3>
                     <div className="space-y-3">
-                      {examData?.topics.map((topic) => (
+                      {examData?.topics?.map((topic, index) => (
                         <TopicCard 
-                          key={topic.id} 
+                          key={topic.id || `topic-${index}`} 
                           topic={topic} 
                           onClick={() => setSelectedTopic(topic)}
                         />
@@ -231,8 +233,12 @@ export default function App() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {filteredResources.length > 0 ? (
-                    filteredResources.map((resource) => (
-                      <ResourceCard key={resource.id} resource={resource} />
+                    filteredResources.map((resource, index) => (
+                      <ResourceCard 
+                        key={resource.id || `res-${index}`} 
+                        resource={resource} 
+                        onClick={() => setSelectedResource(resource)}
+                      />
                     ))
                   ) : (
                     <div className="col-span-full py-12 text-center bg-white rounded-2xl border border-dashed border-slate-300">
@@ -307,6 +313,78 @@ export default function App() {
           </div>
         )}
       </AnimatePresence>
+
+      {/* Resource Detail Modal */}
+      <AnimatePresence>
+        {selectedResource && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedResource(null)}
+              className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+            >
+              <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-brand-100 text-brand-600 rounded-lg">
+                    <FileText size={20} />
+                  </div>
+                  <h3 className="font-bold text-slate-900">{selectedResource.title}</h3>
+                </div>
+                <button 
+                  onClick={() => setSelectedResource(null)}
+                  className="p-2 hover:bg-slate-200 rounded-full transition-colors"
+                >
+                  <ChevronRight className="rotate-90 text-slate-400" size={24} />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-8">
+                {selectedResource.content ? (
+                  <div className="prose prose-slate max-w-none prose-headings:text-brand-700 prose-p:text-slate-600">
+                    <Markdown>{selectedResource.content}</Markdown>
+                  </div>
+                ) : (
+                  <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
+                    <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                      <Search size={32} />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-slate-900">لا يوجد عرض مسبق</h4>
+                      <p className="text-slate-500">هذا المصدر متاح فقط عبر الرابط الخارجي.</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="p-6 border-t border-slate-100 bg-slate-50/50 flex gap-4">
+                <a 
+                  href={selectedResource.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 flex items-center justify-center gap-2 py-3 px-6 bg-brand-600 text-white rounded-xl font-bold hover:bg-brand-700 transition-all shadow-lg shadow-brand-200"
+                >
+                  <ExternalLink size={20} />
+                  فتح الرابط الأصلي
+                </a>
+                <button 
+                  onClick={() => setSelectedResource(null)}
+                  className="py-3 px-6 bg-white border border-slate-200 text-slate-700 rounded-xl font-bold hover:bg-slate-50 transition-all"
+                >
+                  إغلاق
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -360,7 +438,7 @@ function TopicCard({ topic, onClick }: { topic: Topic, onClick?: () => void }) {
   );
 }
 
-function ResourceCard({ resource }: { resource: Resource }) {
+function ResourceCard({ resource, onClick }: { resource: Resource, onClick?: () => void }) {
   const getIcon = () => {
     switch (resource.type) {
       case 'pdf': return <FileText size={20} />;
@@ -386,11 +464,9 @@ function ResourceCard({ resource }: { resource: Resource }) {
   };
 
   return (
-    <a 
-      href={resource.url} 
-      target="_blank" 
-      rel="noopener noreferrer"
-      className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm card-hover flex flex-col gap-3 group"
+    <button 
+      onClick={onClick}
+      className="w-full text-right bg-white p-4 rounded-xl border border-slate-200 shadow-sm card-hover flex flex-col gap-3 group"
     >
       <div className="flex items-center justify-between">
         <div className={cn(
@@ -399,13 +475,18 @@ function ResourceCard({ resource }: { resource: Resource }) {
         )}>
           {getIcon()}
         </div>
-        <ExternalLink size={16} className="text-slate-300 group-hover:text-brand-600 transition-colors" />
+        <div className="flex items-center gap-2">
+          {resource.content && (
+            <span className="text-[10px] bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full font-bold uppercase">متوفر للعرض</span>
+          )}
+          <ExternalLink size={16} className="text-slate-300 group-hover:text-brand-600 transition-colors" />
+        </div>
       </div>
       <div>
         <h4 className="font-semibold text-slate-900 group-hover:text-brand-600 transition-colors">{resource.title}</h4>
         <p className="text-xs text-slate-500 font-medium mt-1">{getTypeText()}</p>
       </div>
-    </a>
+    </button>
   );
 }
 
