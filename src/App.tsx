@@ -22,7 +22,7 @@ import {
   PlayCircle
 } from 'lucide-react';
 import Markdown from 'react-markdown';
-import { generateExamContent } from './services/geminiService';
+import { generateExamContent, generateQCMs } from './services/geminiService';
 import { ExamData, Topic, Question, Resource } from './types';
 import { cn } from './lib/utils';
 
@@ -53,13 +53,20 @@ const INITIAL_EXAM_DATA: ExamData = {
 };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'library'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'library' | 'qcm'>('dashboard');
   const [examData, setExamData] = useState<ExamData>(INITIAL_EXAM_DATA);
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
   const [filterType, setFilterType] = useState<'all' | 'pdf' | 'link'>('all');
   const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
+  
+  // QCM State
+  const [qcmTopic, setQcmTopic] = useState('');
+  const [generatedQCMs, setGeneratedQCMs] = useState<Question[]>([]);
+  const [isGeneratingQCM, setIsGeneratingQCM] = useState(false);
+  const [qcmAnswers, setQcmAnswers] = useState<Record<number, string>>({});
+  const [showQcmResults, setShowQcmResults] = useState(false);
 
   useEffect(() => {
     // Background update if needed, but don't block
@@ -82,6 +89,22 @@ export default function App() {
 
     updateData();
   }, []);
+
+  const handleGenerateQCM = async () => {
+    if (!qcmTopic.trim()) return;
+    setIsGeneratingQCM(true);
+    setGeneratedQCMs([]);
+    setQcmAnswers({});
+    setShowQcmResults(false);
+    try {
+      const questions = await generateQCMs(qcmTopic);
+      setGeneratedQCMs(questions);
+    } catch (error) {
+      console.error("Failed to generate QCMs:", error);
+    } finally {
+      setIsGeneratingQCM(false);
+    }
+  };
 
   const filteredResources = examData?.resources?.filter(r => {
     const title = r.title || '';
@@ -113,6 +136,12 @@ export default function App() {
             onClick={() => setActiveTab('library')}
             icon={<Library size={18} />}
             label="المكتبة"
+          />
+          <NavButton 
+            active={activeTab === 'qcm'} 
+            onClick={() => setActiveTab('qcm')}
+            icon={<BrainCircuit size={18} />}
+            label="مولد QCM"
           />
         </div>
 
@@ -247,6 +276,112 @@ export default function App() {
                     </div>
                   )}
                 </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'qcm' && (
+              <motion.div
+                key="qcm"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="space-y-8 max-w-4xl mx-auto"
+              >
+                <header className="text-center space-y-2">
+                  <h2 className="text-3xl font-bold text-slate-900">مولد أسئلة QCM الذكي</h2>
+                  <p className="text-slate-500">أدخل موضوعاً في العلوم الطبيعية وسأقوم بتوليد أسئلة لك.</p>
+                </header>
+
+                <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+                  <div className="flex gap-3">
+                    <input 
+                      type="text" 
+                      placeholder="مثال: تركيب البروتين، المناعة، الاتصال العصبي..."
+                      className="flex-1 px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-500 outline-none transition-all text-lg"
+                      value={qcmTopic}
+                      onChange={(e) => setQcmTopic(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleGenerateQCM()}
+                    />
+                    <button 
+                      onClick={handleGenerateQCM}
+                      disabled={isGeneratingQCM || !qcmTopic.trim()}
+                      className="px-8 py-4 bg-brand-600 text-white rounded-2xl font-bold hover:bg-brand-700 transition-all shadow-lg shadow-brand-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    >
+                      {isGeneratingQCM ? <Loader2 className="animate-spin" size={20} /> : <BrainCircuit size={20} />}
+                      توليد
+                    </button>
+                  </div>
+                </div>
+
+                {generatedQCMs.length > 0 && (
+                  <div className="space-y-6">
+                    {generatedQCMs.map((q, qIdx) => (
+                      <div key={qIdx} className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+                        <h3 className="text-xl font-bold text-slate-900">{qIdx + 1}. {q.text}</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {Array.isArray(q.options) && q.options.map((opt, optIdx) => {
+                            const letter = String.fromCharCode(65 + optIdx);
+                            const isSelected = qcmAnswers[qIdx] === letter;
+                            const isCorrect = q.correctAnswer === letter;
+                            
+                            let bgColor = "bg-slate-50 border-slate-200 hover:border-brand-300";
+                            if (showQcmResults) {
+                              if (isCorrect) bgColor = "bg-emerald-50 border-emerald-500 text-emerald-700";
+                              else if (isSelected) bgColor = "bg-red-50 border-red-500 text-red-700";
+                            } else if (isSelected) {
+                              bgColor = "bg-brand-50 border-brand-500 text-brand-700";
+                            }
+
+                            return (
+                              <button
+                                key={optIdx}
+                                onClick={() => !showQcmResults && setQcmAnswers(prev => ({ ...prev, [qIdx]: letter }))}
+                                className={cn(
+                                  "text-right p-4 rounded-2xl border-2 transition-all flex items-center gap-4",
+                                  bgColor
+                                )}
+                              >
+                                <span className="w-8 h-8 rounded-lg bg-white border border-inherit flex items-center justify-center font-bold shrink-0">
+                                  {letter}
+                                </span>
+                                <span className="font-medium">{opt}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                        {showQcmResults && (
+                          <motion.div 
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            className="p-4 bg-brand-50 rounded-2xl border border-brand-100 text-brand-800 text-sm"
+                          >
+                            <p className="font-bold mb-1">التفسير:</p>
+                            {q.explanation}
+                          </motion.div>
+                        )}
+                      </div>
+                    ))}
+
+                    <div className="flex justify-center pt-4">
+                      {!showQcmResults ? (
+                        <button 
+                          onClick={() => setShowQcmResults(true)}
+                          disabled={Object.keys(qcmAnswers).length < generatedQCMs.length}
+                          className="px-12 py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-xl disabled:opacity-50"
+                        >
+                          تصحيح الإجابات
+                        </button>
+                      ) : (
+                        <button 
+                          onClick={handleGenerateQCM}
+                          className="px-12 py-4 bg-brand-600 text-white rounded-2xl font-bold hover:bg-brand-700 transition-all shadow-xl"
+                        >
+                          محاولة مرة أخرى بموضوع جديد
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
